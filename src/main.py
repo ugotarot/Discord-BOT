@@ -5,6 +5,7 @@ from discord.utils import get, find
 
 intents = discord.Intents.default()
 intents.members = True
+intents.presences = True
 intents.message_content = True
 bot = commands.Bot(
     command_prefix="!",  # Change to desired prefix
@@ -66,8 +67,8 @@ async def count(ctx):
     offlineCount = 0
     idleCount = 0
     doNotDisturbCount = 0
-    
-    for user in ctx.guild.members:
+    for user in [x for x in ctx.guild.members if not x.bot]:
+
         if user.status == discord.Status.online:
             onlineCount += 1
         if user.status == discord.Status.offline:
@@ -76,7 +77,6 @@ async def count(ctx):
             idleCount += 1
         if user.status == discord.Status.do_not_disturb:
             doNotDisturbCount += 1
-
     msg = ""
     if onlineCount :
         msg += "" + str(onlineCount) + " members are online\n"
@@ -88,5 +88,12 @@ async def count(ctx):
         msg += "" + str(doNotDisturbCount) + " members do not want to be disturbed"
     await ctx.send(msg)
 
-token = "MTAyMjE5MjY4MjYwNjUzNDc2Ng.GFx4IN.AVm5PzxQBqETRwQ8Rww0oPYmJR6S5oIWf-_poE"
+@bot.command()
+async def xkcd(ctx):
+    embed = discord.Embed()
+    embed.set_image(url="https://c.xkcd.com/random/comic/")
+    await ctx.send(embed=embed) 
+
+
+token = ""
 bot.run(token)  # Starts the bot
